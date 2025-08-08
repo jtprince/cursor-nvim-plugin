@@ -1,0 +1,206 @@
+*cursor_cli.txt*    Cursor CLI Plugin for Neovim                     *cursor-cli*
+
+Author: Ross (with AI assistance)
+Version: 1.0
+License: MIT
+
+==============================================================================
+CONTENTS                                                    *cursor-cli-contents*
+
+1. Introduction.................................|cursor-cli-introduction|
+2. Installation.................................|cursor-cli-installation|
+3. Commands.....................................|cursor-cli-commands|
+4. Configuration................................|cursor-cli-configuration|
+5. Functions....................................|cursor-cli-functions|
+6. Troubleshooting..............................|cursor-cli-troubleshooting|
+
+==============================================================================
+1. INTRODUCTION                                         *cursor-cli-introduction*
+
+Cursor CLI Plugin brings Cursor IDE-like AI functionality to Neovim. It 
+provides intelligent code editing, generation, explanation, review, and more
+using the Cursor CLI tool.
+
+Features:
+- AI Chat Interface
+- Intelligent Code Editing with diff preview
+- Code Generation from natural language
+- Code Explanation and documentation
+- Automated Code Review
+- Performance Optimization suggestions
+- Error Detection and Fixing
+- Smart Refactoring with interactive menu
+- Streaming responses with timeout handling
+- Context-aware prompts
+
+==============================================================================
+2. INSTALLATION                                         *cursor-cli-installation*
+
+Prerequisites:
+1. Neovim 0.5.0+ (required for Lua support)
+2. Cursor CLI installed and authenticated
+
+Install Cursor CLI: >
+    curl https://cursor.com/install -fsS | bash
+<
+
+Authenticate: >
+    cursor-agent login
+<
+
+Plugin Installation:
+
+Using vim-plug: >
+    Plug 'your-username/cursor-nvim-plugin'
+<
+
+Using packer.nvim: >
+    use 'your-username/cursor-nvim-plugin'
+<
+
+Using lazy.nvim: >
+    {
+      'your-username/cursor-nvim-plugin',
+      config = function()
+        -- Optional configuration
+      end,
+    }
+<
+
+Manual Installation: >
+    git clone https://github.com/your-username/cursor-nvim-plugin.git \
+      ~/.config/nvim/pack/plugins/start/cursor-nvim-plugin
+<
+
+==============================================================================
+3. COMMANDS                                                 *cursor-cli-commands*
+
+                                                              *:CursorChat*
+:CursorChat             Open AI chat interface. Prompts for a question and
+                        displays the AI response in a new buffer.
+
+                                                              *:CursorEdit*
+:[range]CursorEdit      Edit selected code with AI instructions. Works on
+                        visual selection or current line. Shows diff preview
+                        and prompts to apply changes.
+
+                                                          *:CursorGenerate*
+:CursorGenerate         Generate code from natural language description.
+                        Uses current line as default instruction if it's a
+                        comment. Inserts generated code at cursor position.
+
+                                                           *:CursorExplain*
+:[range]CursorExplain   Explain selected code. Creates a new buffer with
+                        detailed explanation of the selected code block.
+
+                                                            *:CursorReview*
+:CursorReview           Review the current file for best practices, bugs,
+                        and potential improvements. Shows results in a new
+                        buffer.
+
+                                                          *:CursorOptimize*
+:[range]CursorOptimize  Optimize selected code for better performance and
+                        readability. Shows diff preview and prompts to
+                        apply changes.
+
+                                                              *:CursorFix*
+:[range]CursorFix       Fix errors or bugs in selected code. Shows diff
+                        preview and prompts to apply fixes.
+
+                                                          *:CursorRefactor*
+:[range]CursorRefactor  Smart refactoring with interactive menu. Options
+                        include extract function, rename variables, add
+                        comments, simplify logic, or custom instruction.
+
+                                                            *:CursorStatus*
+:CursorStatus           Check if Cursor CLI is available and properly
+                        configured.
+
+                                                              *:CursorTest*
+:CursorTest             Test Cursor CLI connection with a simple prompt.
+                        Useful for verifying setup.
+
+==============================================================================
+4. CONFIGURATION                                        *cursor-cli-configuration*
+
+                                                        *g:cursor_cli_command*
+g:cursor_cli_command    Command to execute the Cursor CLI (default: 'cursor-agent')
+
+                                                          *g:cursor_cli_model*
+g:cursor_cli_model      Default AI model to use (default: 'sonnet-4')
+
+Example configuration: >
+    let g:cursor_cli_command = 'cursor-agent'
+    let g:cursor_cli_model = 'sonnet-4'
+<
+
+Available models:
+- sonnet-4 (default)
+- sonnet-4-thinking
+- gpt-5
+- Check `cursor-agent --help` for current models
+
+==============================================================================
+5. FUNCTIONS                                                *cursor-cli-functions*
+
+The plugin provides several internal functions that can be called directly:
+
+CursorChat()            Opens the AI chat interface
+CursorEdit()            Edits selected code with AI
+CursorGenerate()        Generates code from description
+CursorExplain()         Explains selected code
+CursorReview()          Reviews current file
+CursorOptimize()        Optimizes selected code
+CursorFix()             Fixes errors in code
+CursorRefactor()        Smart refactoring menu
+CursorTest()            Tests CLI connection
+
+==============================================================================
+6. TROUBLESHOOTING                                   *cursor-cli-troubleshooting*
+
+Common Issues:
+
+"Cursor CLI not found"
+    Install Cursor CLI: >
+        curl https://cursor.com/install -fsS | bash
+<
+    Verify installation: >
+        which cursor-agent
+<
+
+Authentication Issues
+    Login to Cursor: >
+        cursor-agent login
+        cursor-agent status
+<
+
+Timeout Issues
+    - Try shorter prompts
+    - Check internet connection
+    - Verify Cursor account status
+
+No response from AI
+    - Run :CursorTest to verify connection
+    - Check :CursorStatus for CLI availability
+    - Ensure you're authenticated with cursor-agent
+
+Plugin not loading
+    - Ensure Neovim 0.5.0+
+    - Check plugin installation path
+    - Verify no conflicting plugins
+
+Example key mappings: >
+    " Cursor CLI mappings
+    nmap <leader>cc :CursorChat<CR>
+    nmap <leader>ce :CursorEdit<CR>
+    vmap <leader>ce :CursorEdit<CR>
+    nmap <leader>cg :CursorGenerate<CR>
+    vmap <leader>cx :CursorExplain<CR>
+    nmap <leader>cr :CursorReview<CR>
+    vmap <leader>co :CursorOptimize<CR>
+    vmap <leader>cf :CursorFix<CR>
+    vmap <leader>crf :CursorRefactor<CR>
+<
+
+==============================================================================
+vim:tw=78:ts=8:ft=help:norl: 
