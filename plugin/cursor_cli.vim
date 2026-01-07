@@ -299,6 +299,41 @@ command! -range CursorRefactor <line1>,<line2>call CursorRefactor()
 " These commands allow you to specify the model directly in the command name
 " Format: :CursorChat<Model> where Model is one of the available models
 
+" Helper function to create model-specific commands
+function! s:create_model_commands(cmd_name, model_value)
+    " CursorChat variants
+    execute printf("function! CursorChat%s(...)\n    call CursorChat('%s')\nendfunction", a:cmd_name, a:model_value)
+    execute printf("command! CursorChat%s call CursorChat%s()", a:cmd_name, a:cmd_name)
+    
+    " CursorEdit variants
+    execute printf("function! CursorEdit%s(...) range\n    call CursorEdit('%s')\nendfunction", a:cmd_name, a:model_value)
+    execute printf("command! -range CursorEdit%s <line1>,<line2>call CursorEdit%s()", a:cmd_name, a:cmd_name)
+    
+    " CursorGenerate variants
+    execute printf("function! CursorGenerate%s(...)\n    call CursorGenerate('%s')\nendfunction", a:cmd_name, a:model_value)
+    execute printf("command! CursorGenerate%s call CursorGenerate%s()", a:cmd_name, a:cmd_name)
+    
+    " CursorExplain variants
+    execute printf("function! CursorExplain%s(...) range\n    call CursorExplain('%s')\nendfunction", a:cmd_name, a:model_value)
+    execute printf("command! -range CursorExplain%s <line1>,<line2>call CursorExplain%s()", a:cmd_name, a:cmd_name)
+    
+    " CursorReview variants
+    execute printf("function! CursorReview%s(...)\n    call CursorReview('%s')\nendfunction", a:cmd_name, a:model_value)
+    execute printf("command! CursorReview%s call CursorReview%s()", a:cmd_name, a:cmd_name)
+    
+    " CursorOptimize variants
+    execute printf("function! CursorOptimize%s(...) range\n    call CursorOptimize('%s')\nendfunction", a:cmd_name, a:model_value)
+    execute printf("command! -range CursorOptimize%s <line1>,<line2>call CursorOptimize%s()", a:cmd_name, a:cmd_name)
+    
+    " CursorFix variants
+    execute printf("function! CursorFix%s(...) range\n    call CursorFix('%s')\nendfunction", a:cmd_name, a:model_value)
+    execute printf("command! -range CursorFix%s <line1>,<line2>call CursorFix%s()", a:cmd_name, a:cmd_name)
+    
+    " CursorRefactor variants
+    execute printf("function! CursorRefactor%s(...) range\n    call CursorRefactor('%s')\nendfunction", a:cmd_name, a:model_value)
+    execute printf("command! -range CursorRefactor%s <line1>,<line2>call CursorRefactor%s()", a:cmd_name, a:cmd_name)
+endfunction
+
 " Define available models and their command-friendly names
 let s:models = [
     \ ['Sonnet4', 'sonnet-4'],
@@ -313,40 +348,7 @@ let s:models = [
 
 " Create model-specific commands for each base command
 for model_pair in s:models
-    let l:cmd_name = model_pair[0]
-    let l:model_value = model_pair[1]
-    
-    " CursorChat variants
-    execute printf("function! CursorChat%s(...)\n    call CursorChat('%s')\nendfunction", l:cmd_name, l:model_value)
-    execute printf("command! CursorChat%s call CursorChat%s()", l:cmd_name, l:cmd_name)
-    
-    " CursorEdit variants
-    execute printf("function! CursorEdit%s(...) range\n    call CursorEdit('%s')\nendfunction", l:cmd_name, l:model_value)
-    execute printf("command! -range CursorEdit%s <line1>,<line2>call CursorEdit%s()", l:cmd_name, l:cmd_name)
-    
-    " CursorGenerate variants
-    execute printf("function! CursorGenerate%s(...)\n    call CursorGenerate('%s')\nendfunction", l:cmd_name, l:model_value)
-    execute printf("command! CursorGenerate%s call CursorGenerate%s()", l:cmd_name, l:cmd_name)
-    
-    " CursorExplain variants
-    execute printf("function! CursorExplain%s(...) range\n    call CursorExplain('%s')\nendfunction", l:cmd_name, l:model_value)
-    execute printf("command! -range CursorExplain%s <line1>,<line2>call CursorExplain%s()", l:cmd_name, l:cmd_name)
-    
-    " CursorReview variants
-    execute printf("function! CursorReview%s(...)\n    call CursorReview('%s')\nendfunction", l:cmd_name, l:model_value)
-    execute printf("command! CursorReview%s call CursorReview%s()", l:cmd_name, l:cmd_name)
-    
-    " CursorOptimize variants
-    execute printf("function! CursorOptimize%s(...) range\n    call CursorOptimize('%s')\nendfunction", l:cmd_name, l:model_value)
-    execute printf("command! -range CursorOptimize%s <line1>,<line2>call CursorOptimize%s()", l:cmd_name, l:cmd_name)
-    
-    " CursorFix variants
-    execute printf("function! CursorFix%s(...) range\n    call CursorFix('%s')\nendfunction", l:cmd_name, l:model_value)
-    execute printf("command! -range CursorFix%s <line1>,<line2>call CursorFix%s()", l:cmd_name, l:cmd_name)
-    
-    " CursorRefactor variants
-    execute printf("function! CursorRefactor%s(...) range\n    call CursorRefactor('%s')\nendfunction", l:cmd_name, l:model_value)
-    execute printf("command! -range CursorRefactor%s <line1>,<line2>call CursorRefactor%s()", l:cmd_name, l:cmd_name)
+    call s:create_model_commands(model_pair[0], model_pair[1])
 endfor
 
 " Status and test functions
