@@ -76,6 +76,28 @@ git clone https://github.com/your-username/cursor-nvim-plugin.git ~/.config/nvim
 | `:CursorTest` | Test CLI connection |
 | `:CursorStatus` | Check CLI status |
 
+### Model-Specific Commands
+
+You can specify the AI model directly in the command name by appending the model name:
+
+| Command | Model Used |
+|---------|------------|
+| `:CursorChatSonnet4` | Uses `sonnet-4` |
+| `:CursorChatSonnet4Thinking` | Uses `sonnet-4-thinking` |
+| `:CursorChatGPT5` | Uses `gpt-5` |
+| `:CursorChatAuto` | Uses `auto` |
+| `:CursorChatClaudeSonnet4` | Uses `claude-sonnet-4` |
+| `:CursorChatClaudeSonnet4Thinking` | Uses `claude-sonnet-4-thinking` |
+| `:CursorChatGPT4` | Uses `gpt-4` |
+| `:CursorChatGPT4Turbo` | Uses `gpt-4-turbo` |
+
+**All commands support model variants!** For example:
+- `:CursorEditSonnet4Thinking` - Edit with thinking model
+- `:CursorGenerateGPT5` - Generate with GPT-5
+- `:CursorExplainAuto` - Explain with auto model selection
+- `:CursorReviewSonnet4` - Review with Sonnet 4
+- And so on for all commands (Edit, Generate, Explain, Review, Optimize, Fix, Refactor)
+
 ### Example Key Mappings
 
 Add these to your `init.vim` or `init.lua`:
@@ -140,10 +162,34 @@ let g:cursor_cli_model = 'sonnet-4'
 ```
 
 ### Available Models
-- `sonnet-4` (default)
-- `sonnet-4-thinking`
-- `gpt-5`
-- And more (check `cursor-agent --help` for current models)
+
+The plugin supports the following models (use with model-specific commands):
+
+- `sonnet-4` (default) - Fast, efficient model
+- `sonnet-4-thinking` - Thinking model with deeper reasoning
+- `gpt-5` - Latest GPT model
+- `auto` - Automatic model selection
+- `claude-sonnet-4` - Claude Sonnet 4
+- `claude-sonnet-4-thinking` - Claude Sonnet 4 with thinking
+- `gpt-4` - GPT-4 model
+- `gpt-4-turbo` - GPT-4 Turbo
+
+**Usage Examples:**
+```vim
+" Use default model (sonnet-4)
+:CursorChat
+
+" Use thinking model
+:CursorChatSonnet4Thinking
+
+" Use GPT-5
+:CursorChatGPT5
+
+" Use auto selection
+:CursorChatAuto
+```
+
+Check `cursor-agent --help` for the complete list of available models.
 
 ### File Type Context
 The plugin automatically provides context based on file type:

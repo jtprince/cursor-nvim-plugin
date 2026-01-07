@@ -12,8 +12,34 @@ function! cursor_cli#available()
     return executable(l:command) || executable('cursor-agent')
 endfunction
 
+" Get list of available models
+function! cursor_cli#get_available_models()
+    return get(g:, 'cursor_cli_models', [
+        \ 'sonnet-4',
+        \ 'sonnet-4-thinking',
+        \ 'gpt-5',
+        \ 'auto',
+        \ 'claude-sonnet-4',
+        \ 'claude-sonnet-4-thinking',
+        \ 'gpt-4',
+        \ 'gpt-4-turbo'
+    \ ])
+endfunction
+
+" Normalize model name (convert CamelCase to kebab-case)
+function! cursor_cli#normalize_model_name(model_name)
+    " Convert CamelCase to kebab-case
+    let l:normalized = substitute(a:model_name, '\C\([A-Z]\)', '-\l\1', 'g')
+    " Remove leading dash if present
+    let l:normalized = substitute(l:normalized, '^-', '', '')
+    " Convert to lowercase
+    let l:normalized = tolower(l:normalized)
+    return l:normalized
+endfunction
+
 " Execute cursor CLI command and parse streaming JSON
-function! cursor_cli#exec(prompt)
+" Optional model parameter: if provided, uses that model; otherwise uses g:cursor_cli_model or default
+function! cursor_cli#exec(prompt, ...)
     if !cursor_cli#available()
         echohl ErrorMsg
         echo "Cursor CLI not found. Install with: curl https://cursor.com/install -fsS | bash"
@@ -23,19 +49,28 @@ function! cursor_cli#exec(prompt)
     
     let l:command = get(g:, 'cursor_cli_command', 'cursor-agent')
     
+    " Get model from argument, global config, or default
+    let l:model = a:0 > 0 && !empty(a:1) ? a:1 : get(g:, 'cursor_cli_model', 'sonnet-4')
+    
     " Escape the prompt properly for shell
     let l:escaped_prompt = substitute(a:prompt, '"', '\\"', 'g')
     let l:escaped_prompt = substitute(l:escaped_prompt, '`', '\\`', 'g')
     let l:escaped_prompt = substitute(l:escaped_prompt, '$', '\\$', 'g')
     
+    " Escape model name for shell
+    let l:escaped_model = substitute(l:model, '"', '\\"', 'g')
+    
     " Create a script that monitors cursor-agent output and terminates when we get the result
     let l:temp_script = tempname() . '.sh'
     let l:temp_output = tempname() . '.out'
     
+    " Build command with model flag
+    let l:cmd_with_model = l:command . ' --print --model "' . l:escaped_model . '" "' . l:escaped_prompt . '"'
+    
     let l:script_content = [
         \ '#!/bin/bash',
         \ '# Start cursor-agent and monitor output',
-        \ l:command . ' --print "' . l:escaped_prompt . '" | while IFS= read -r line; do',
+        \ l:cmd_with_model . ' | while IFS= read -r line; do',
         \ '    echo "$line" >> ' . l:temp_output,
         \ '    if echo "$line" | grep -q "\"type\":\"result\""; then',
         \ '        # Found result line, wait a moment for any final output then exit',
